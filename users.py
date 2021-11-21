@@ -73,6 +73,8 @@ if __name__ == '__main__':
             create_user(cursor, args.username, args.password)
         elif args.list:
             list_user(cursor)
+        else:
+            parser.print_help()
     except OperationalError as err:
         print("Connection Error: ", err)
 
