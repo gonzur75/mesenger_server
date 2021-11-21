@@ -82,12 +82,12 @@ class User:
 
 
 class Message:
-    def __init__(self, from_id="", to_id="", text="", creation_data=None):
+    def __init__(self, from_id="", to_id="", text="", creation_date=None):
         self._id = -1
         self.from_id = from_id
         self.to_id = to_id
         self.text = text
-        self.creation_data = creation_data
+        self.creation_date = creation_date
 
     @property
     def id(self):
@@ -95,15 +95,15 @@ class Message:
 
     def save_to_db(self, cursor):
         if self._id == -1:
-            sql = """INSERT INTO messages(from_id, to_id, text) VALUES(%s, %s) RETURNING id, creation_data"""
+            sql = """INSERT INTO messages(from_id, to_id, text) VALUES(%s, %s, %s) RETURNING id, creation_date"""
             values = (self.from_id, self.to_id, self.text)
             cursor.execute(sql, values)
-            self._id = cursor.fetchone()[0]  # or cursor.fetchone()['id']
-            self.creation_data = cursor.fetchone()['creation_data']
+            self._id, self.creation_date = cursor.fetchone()  # or cursor.fetchone()['id']
+            # self.creation_date = cursor.fetchone()[1]
             return True
         else:
             sql = """UPDATE message SET from_id=%s, to_id=%s, text=%s  WHERE id=%s"""
-            values = (self.from_id, self.to_id,self.text, self.id)
+            values = (self.from_id, self.to_id, self.text, self.id)
             cursor.execute(sql, values)
             return True
 
@@ -113,7 +113,7 @@ class Message:
         messages = []
         cursor.execute(sql)
         for row in cursor.fetchall():
-            id_, from_id, to_id, text, creation_data = row
+            id_, from_id, to_id, text, creation_date = row
             loaded_message = Message()
             loaded_message._id = id_
             loaded_message.from_id = from_id
@@ -122,6 +122,7 @@ class Message:
             loaded_message.creation_date = creation_date
             messages.append(loaded_message)
         return messages
+
 
 if __name__ == "__main__":
 
@@ -133,7 +134,7 @@ if __name__ == "__main__":
     cnx.autocommit = True
     cursor = cnx.cursor()
     user = User.load_user_by_name(cursor, 'Asmith')
-    print(user.id)
+    #print(user.id)
 
 
 
