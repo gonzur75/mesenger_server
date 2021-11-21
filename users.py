@@ -1,6 +1,6 @@
 import argparse
 from models import User
-from psycopg2 import connect
+from psycopg2 import connect, OperationalError
 from psycopg2.errors import UniqueViolation
 from clcrypto import check_password
 
@@ -61,16 +61,20 @@ def rm_user(username, password):
 
 
 if __name__ == '__main__':
-
+    try:
         cnx = connect(database="messenger_server_db", user="postgres", password="coderslab", host="127.0.0.1")
         cnx.autocommit = True
         cursor = cnx.cursor()
-        if args.list:
-            list_user(cursor)
+        if args.username and args.password and args.edit and args.new_pass:
+            edit_password(cursor, args.username, args.password, args.new_pass)
+        elif args.username and args.password and args.delete:
+            rm_user(args.username, args.password)
         elif args.username and args.password:
             create_user(cursor, args.username, args.password)
-        elif args.username and args.password and args.new_pass:
-            edit_password(cursor, args.username, args.password, args.new_pass)
+        elif args.list:
+            list_user(cursor)
+    except OperationalError as err:
+        print("Connection Error: ", err)
 
 
 
