@@ -1,7 +1,6 @@
 from psycopg2 import connect, OperationalError, DatabaseError
 
 
-
 CREATE_DB = "CREATE DATABASE messenger_server_db;"
 
 CREATE_TB_USERS = """CREATE TABLE users(
