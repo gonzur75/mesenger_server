@@ -15,6 +15,7 @@ args = parser.parse_args()
 
 
 def list_messages(cur, username, password):
+    
     user = User.load_user_by_name(cursor, username)
     if not user:
         print("User does not exist!")
