@@ -1,5 +1,7 @@
 import argparse as argparse
+
 from psycopg2 import connect, OperationalError
+
 from clcrypto import check_password
 from models import User, Message
 
@@ -14,8 +16,22 @@ parser.add_argument("-l", "--list", help="list all messages",  action="store_tru
 args = parser.parse_args()
 
 
-def list_messages(cur, username, password):
-    
+def list_user_messages(cur, username, password):
+    """
+           List all messages .
+              The function does the following:
+               - check if user exist
+               - check if provided password is correct for provided user.
+               - list all messages.
+
+              :param object psycopg2 cursor
+              :param string : username
+              :param strring: password
+
+              :rtype: print
+              :return: prints user messages.
+              """
+
     user = User.load_user_by_name(cursor, username)
     if not user:
         print("User does not exist!")
@@ -23,7 +39,10 @@ def list_messages(cur, username, password):
         messages = Message.load_all_messages(cur)
         if messages:
             for message in messages:
-                print(message)
+                if message.from_id == user.id:
+                    print(f"Message from {message.from_id}")
+                    print(message.text)
+                    print(f"Send - {message.creation_date}")
         else:
             print("No messages!")
     else:
@@ -54,7 +73,7 @@ if __name__ == '__main__':
         if args.username and args.password and args.too and args.send:
             send_message(cursor, args.username, args.password, args.too, args.send)
         elif args.username and args.password and args.list:
-            list_messages(cursor, args.username, args.password)
+            list_user_messages(cursor, args.username, args.password)
         else:
             parser.print_help()
     except OperationalError as err:
