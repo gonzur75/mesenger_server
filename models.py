@@ -152,12 +152,16 @@ class Message:
             return True
 
     @staticmethod
-    def load_all_messages(cursor):
+    def load_all_messages(cursor, user_id=None):
         """load_all_users:
                        Load all users, from database using psycopg2 cursor."""
-        sql = "SELECT id, from_id, to_id, text, creation_date FROM messages;"
         messages = []
-        cursor.execute(sql)
+        if user_id:
+            sql = "SELECT id, from_id, to_id, text, creation_date FROM messages WHERE to_id=%s;"
+            cursor.execute(sql, (user_id,))
+        else:
+            sql = "SELECT id, from_id, to_id, text, creation_date FROM messages;"
+            cursor.execute(sql)
         for row in cursor.fetchall():
             id_, from_id, to_id, text, creation_date = row
             loaded_message = Message()

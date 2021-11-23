@@ -1,6 +1,6 @@
 import argparse
 from models import User
-from psycopg2 import connect, OperationalError,
+from psycopg2 import connect, OperationalError
 from psycopg2.errors import UniqueViolation
 from clcrypto import check_password
 
@@ -11,7 +11,7 @@ parser.add_argument("-n", "--new_pass", help="new password(min 8 characters")
 parser.add_argument("-l", "--list", help="list all users", action="store_true")
 parser.add_argument("-d", "--delete", help="delete user", action="store_true")
 parser.add_argument("-e", "--edit", help="edit user", action="store_true")
-#parser.print_help()
+
 
 args = parser.parse_args()
 
@@ -117,10 +117,12 @@ def rm_user(username, password):
 
 
 if __name__ == '__main__':
+    #  Establishing connection to database
     try:
         cnx = connect(database="messenger_server_db", user="postgres", password="coderslab", host="127.0.0.1")
         cnx.autocommit = True
         cursor = cnx.cursor()
+        # Logic to deal with incoming parsed arguments
         if args.username and args.password and args.edit and args.new_pass:
             edit_password(cursor, args.username, args.password, args.new_pass)
         elif args.username and args.password and args.delete:
@@ -131,6 +133,7 @@ if __name__ == '__main__':
             list_user(cursor)
         else:
             parser.print_help()
+        cnx.close()
     except OperationalError as err:
         print("Connection Error: ", err)
 

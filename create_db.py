@@ -14,7 +14,7 @@ CREATE_TB_MESSAGES = """CREATE TABLE messages(
                      id serial PRIMARY KEY, 
                      from_id INT REFERENCES users(id) ON DELETE CASCADE , 
                      to_id INT REFERENCES users(id) ON DELETE CASCADE, 
-                     creation_date timestamp, text VARCHAR(255)
+                     creation_date timestamp DEFAULT CURRENT_TIMESTAMP , text VARCHAR(255)
                      );
 """
 USER = "postgres"
