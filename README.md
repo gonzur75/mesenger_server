@@ -18,8 +18,8 @@ Application is created with:
 * clcrypto libray pseudo password hashing library
 
 ## Setup
-App is using library argparse to mange parameters passed from terminal.
+App is using library argparse to process parameters passed from terminal.
 Example of use:
-python3 messeges.py --user<USERNAME> --password<PASSWORD> --l
+python3 messages.py --user<USERNAME> --password<PASSWORD> --l
 
 

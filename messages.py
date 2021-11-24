@@ -44,7 +44,6 @@ def list_user_messages(cur, username, password):
                 print(f"Message from {_from.username}")
                 print(message.text)
                 print(f"Send - {message.creation_date}")
-                print(20 * "@")
         else:
             print("No messages!")
     else:
